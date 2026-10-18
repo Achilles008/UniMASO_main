@@ -1,0 +1,17 @@
+{
+  "version": "1.0",
+  "priors": {
+    "Independent": {
+      "allocation_prior": "Only logical predictor Agents 0, 1, and 2 are model-allocation variables. The terminal aggregation step is a mechanical operation, not an Agent, does not call an LLM, and must not receive a model assignment."
+    },
+    "Centralized": {
+      "allocation_prior": "Specialist nodes solve local aspects in parallel and the terminal task summarizer integrates their outputs. Allocate models according to specialist difficulty, while giving additional capability to the terminal summarizer because it must preserve cross-agent consistency and produce the final answer."
+    },
+    "Sequential": {
+      "allocation_prior": "The predictor creates an independent solution and the reflector checks, diagnoses, and corrects it. Allocate enough capability to the reflector for reliable error detection; when the task is difficult, the reflector should be no weaker than the predictor."
+    },
+    "Decentralized": {
+      "allocation_prior": "Only logical Council Agents 0, 1, and 2 are model-allocation variables. Each logical Agent acts in two review stages; the runtime second-stage instances are implementation details and share the model of their logical Agent. The final voting step is mechanical, not an Agent, and must be excluded from model allocation. Return model_assignment only for logical IDs 0, 1, and 2."
+    }
+  }
+}

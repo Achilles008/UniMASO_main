@@ -1,0 +1,1901 @@
+{
+  "version": "1.0",
+  "source": "Generated from MAS._build(), Agent templates, and dataset task types.",
+  "datasets": {
+    "agi": {
+      "actual_dataset": "agi",
+      "task_type": "math",
+      "task_focus": "math reasoning and answer verification",
+      "graphs": {
+        "Independent": {
+          "topology_purpose": "parallel independent solving followed by terminal aggregation or voting",
+          "agent_count": 3,
+          "edges": [],
+          "topological_order": [
+            0,
+            1,
+            2
+          ],
+          "agents": [
+            {
+              "agent_id": 0,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; dataset focus: math reasoning and answer verification",
+              "initial_prompt": "Analyze the problem in 2-3 key steps. Show your final answer between <answer> and </answer> tags.\n{context}\nQuestion: {question}\nReasoning:",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 1,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; dataset focus: math reasoning and answer verification",
+              "initial_prompt": "Analyze the problem in 2-3 key steps. Show your final answer between <answer> and </answer> tags.\n{context}\nQuestion: {question}\nReasoning:",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 2,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; dataset focus: math reasoning and answer verification",
+              "initial_prompt": "Analyze the problem in 2-3 key steps. Show your final answer between <answer> and </answer> tags.\n{context}\nQuestion: {question}\nReasoning:",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            }
+          ],
+          "terminal_operation": {
+            "type": "mechanical_aggregation",
+            "input_agents": [
+              0,
+              1,
+              2
+            ],
+            "description": "Collect and mechanically aggregate or vote over the three predictor outputs. This operation does not call an LLM, has no Prompt, and must not receive a model assignment."
+          },
+          "runtime_execution": {
+            "runtime_nodes": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "terminal_node": 3,
+            "edges": [
+              [
+                0,
+                3
+              ],
+              [
+                1,
+                3
+              ],
+              [
+                2,
+                3
+              ]
+            ],
+            "topological_order": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "note": "Runtime node 3 is an implementation detail for the mechanical aggregation operation, not an Agent."
+          },
+          "graph_type": "Independent"
+        },
+        "Centralized": {
+          "topology_purpose": "parallel specialist analysis followed by top-level task summarization",
+          "agent_count": 4,
+          "edges": [
+            [
+              0,
+              3
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "topological_order": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "agents": [
+            {
+              "agent_id": 0,
+              "agent_type": "math_agent",
+              "role": "math specialist focusing on rigorous derivation and calculation; dataset focus: math reasoning and answer verification",
+              "initial_prompt": "You are a math agent. Given the input question, reason step-by-step and put the final answer inside <answer>YOUR_FINAL_ANSWER</answer>.\n\nInput Question: {question}\n\nYour response:",
+              "upstream_agents": [],
+              "downstream_agents": [
+                3
+              ],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 1,
+              "agent_type": "science_agent",
+              "role": "science specialist focusing on facts, evidence, and distractors; dataset focus: math reasoning and answer verification",
+              "initial_prompt": "You are a science agent. Given the input question, reason step-by-step and put the final answer inside <answer>YOUR_FINAL_ANSWER</answer>.\n\nInput Question: {question}\n\nYour response:",
+              "upstream_agents": [],
+              "downstream_agents": [
+                3
+              ],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 2,
+              "agent_type": "code_agent",
+              "role": "coding specialist focusing on algorithms, complexity, and executable code; dataset focus: math reasoning and answer verification",
+              "initial_prompt": "You are a code agent. Given the input question, reason step-by-step and put the final answer inside <answer>YOUR_FINAL_ANSWER</answer>.\n\nInput Question: {question}\n\nYour response:",
+              "upstream_agents": [],
+              "downstream_agents": [
+                3
+              ],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 3,
+              "agent_type": "task_summarizer",
+              "role": "integrates specialist outputs into one reliable final answer; dataset focus: math reasoning and answer verification",
+              "initial_prompt": "You are a task summarizer. Given the input question and responses from previous agents as reference, reason step-by-step and put the final answer inside <answer>YOUR_FINAL_ANSWER</answer>.\n\nContent from Previous Agent:\n{context}\n\nInput Question: {question}\n\nYour response:",
+              "upstream_agents": [
+                0,
+                1,
+                2
+              ],
+              "downstream_agents": [],
+              "is_terminal": true,
+              "is_optimizable": true
+            }
+          ],
+          "graph_type": "Centralized"
+        },
+        "Sequential": {
+          "topology_purpose": "sequential solving and reflection, with a reflector correcting prior output",
+          "agent_count": 2,
+          "edges": [
+            [
+              0,
+              1
+            ]
+          ],
+          "topological_order": [
+            0,
+            1
+          ],
+          "agents": [
+            {
+              "agent_id": 0,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; dataset focus: math reasoning and answer verification",
+              "initial_prompt": "Solve the following mathematics problem.\n\nReason through it in 3-5 concise steps and check the result carefully.\n\nOutput the final answer exactly once:\n<answer>YOUR_FINAL_ANSWER</answer>\n\nQuestion:\n{question}",
+              "upstream_agents": [],
+              "downstream_agents": [
+                1
+              ],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 1,
+              "agent_type": "reflector",
+              "role": "checks correctness, completeness, and format, then corrects the prior result; dataset focus: math reasoning and answer verification",
+              "initial_prompt": "Review the previous mathematical solution and independently verify the answer.\n\nCorrect it if necessary. Use 3-5 concise reasoning steps.\n\nOutput the verified final answer exactly once:\n<answer>YOUR_FINAL_ANSWER</answer>\n\nQuestion:\n{question}\n\nPrevious solution:\n{context}",
+              "upstream_agents": [
+                0
+              ],
+              "downstream_agents": [],
+              "is_terminal": true,
+              "is_optimizable": true
+            }
+          ],
+          "graph_type": "Sequential"
+        },
+        "Decentralized": {
+          "topology_purpose": "multi-persona first-round analysis, cross-review second round, then aggregation",
+          "agent_count": 3,
+          "edges": [],
+          "topological_order": [
+            0,
+            1,
+            2
+          ],
+          "agents": [
+            {
+              "agent_id": 0,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; cross-review upstream parallel analyses; dataset focus: math reasoning and answer verification; logical Council member acting in both review stages",
+              "initial_prompt": "You are a Direct Solver: use a direct and reliable method to solve the problem.\n\nSolve the problem independently. If reference results from other Agents are provided, check their correctness, correct them when necessary, and do not copy them blindly.\n\nQuestion:\n{question}\n\n{context_block}\n\nRetain the necessary reasoning and write the final result exactly as follows:\n<answer>FINAL_ANSWER</answer>\n\nThe tag must contain only the final answer, with no analysis or explanation.",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 1,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; cross-review upstream parallel analyses; dataset focus: math reasoning and answer verification; logical Council member acting in both review stages",
+              "initial_prompt": "You are a Multi-angle Analyst: examine the problem from different angles and choose the most credible conclusion.\n\nSolve the problem independently. If reference results from other Agents are provided, check their correctness, correct them when necessary, and do not copy them blindly.\n\nQuestion:\n{question}\n\n{context_block}\n\nRetain the necessary reasoning and write the final result exactly as follows:\n<answer>FINAL_ANSWER</answer>\n\nThe tag must contain only the final answer, with no analysis or explanation.",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 2,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; cross-review upstream parallel analyses; dataset focus: math reasoning and answer verification; logical Council member acting in both review stages",
+              "initial_prompt": "You are a Result Verifier: focus on finding errors, contradictions, omissions, and edge cases.\n\nSolve the problem independently. If reference results from other Agents are provided, check their correctness, correct them when necessary, and do not copy them blindly.\n\nQuestion:\n{question}\n\n{context_block}\n\nRetain the necessary reasoning and write the final result exactly as follows:\n<answer>FINAL_ANSWER</answer>\n\nThe tag must contain only the final answer, with no analysis or explanation.",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            }
+          ],
+          "execution_stages": [
+            {
+              "stage": 1,
+              "description": "The three logical Council members independently analyze the original problem."
+            },
+            {
+              "stage": 2,
+              "description": "The same three logical Council members review the first-stage analyses of the other members and revise their conclusions."
+            }
+          ],
+          "shared_runtime_groups": [
+            [
+              0,
+              3
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              2,
+              5
+            ]
+          ],
+          "terminal_operation": {
+            "type": "mechanical_vote",
+            "input_logical_agents": [
+              0,
+              1,
+              2
+            ],
+            "description": "Mechanically vote over the three second-stage conclusions. This operation does not call an LLM, has no Prompt, and must not receive a model assignment."
+          },
+          "runtime_execution": {
+            "runtime_nodes": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "round1_nodes": [
+              0,
+              1,
+              2
+            ],
+            "round2_nodes": [
+              3,
+              4,
+              5
+            ],
+            "logical_mapping": {
+              "0": [
+                0,
+                3
+              ],
+              "1": [
+                1,
+                4
+              ],
+              "2": [
+                2,
+                5
+              ]
+            },
+            "terminal_node": 6,
+            "edges": [
+              [
+                0,
+                3
+              ],
+              [
+                0,
+                4
+              ],
+              [
+                0,
+                5
+              ],
+              [
+                1,
+                3
+              ],
+              [
+                1,
+                4
+              ],
+              [
+                1,
+                5
+              ],
+              [
+                2,
+                3
+              ],
+              [
+                2,
+                4
+              ],
+              [
+                2,
+                5
+              ],
+              [
+                3,
+                6
+              ],
+              [
+                4,
+                6
+              ],
+              [
+                5,
+                6
+              ]
+            ],
+            "topological_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "note": "Runtime nodes 3-5 are second-stage instances of logical members 0-2; runtime node 6 is the mechanical voter. They are not independent optimization variables."
+          },
+          "graph_type": "Decentralized"
+        }
+      }
+    },
+    "bfcl": {
+      "actual_dataset": "bfcl_v3",
+      "task_type": "function_calling",
+      "task_focus": "tool selection, parameter extraction, and call format",
+      "graphs": {
+        "Independent": {
+          "topology_purpose": "parallel independent solving followed by terminal aggregation or voting",
+          "agent_count": 3,
+          "edges": [],
+          "topological_order": [
+            0,
+            1,
+            2
+          ],
+          "agents": [
+            {
+              "agent_id": 0,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; dataset focus: tool selection, parameter extraction, and call format",
+              "initial_prompt": "Based on the user query, select the most appropriate function from the available tools and provide accurate parameter values. Pay close attention to: (1) exact function name, (2) required vs optional parameters, (3) correct parameter types (integer, float, string, boolean, list, dict), and (4) extracting values precisely as they appear in the query.\nEnd with one fenced ```json``` block containing a non-empty list of canonical function-call dicts.\n{context}\nUser Query: {question}\nFunction Call:",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 1,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; dataset focus: tool selection, parameter extraction, and call format",
+              "initial_prompt": "Based on the user query, select the most appropriate function from the available tools and provide accurate parameter values. Pay close attention to: (1) exact function name, (2) required vs optional parameters, (3) correct parameter types (integer, float, string, boolean, list, dict), and (4) extracting values precisely as they appear in the query.\nEnd with one fenced ```json``` block containing a non-empty list of canonical function-call dicts.\n{context}\nUser Query: {question}\nFunction Call:",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 2,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; dataset focus: tool selection, parameter extraction, and call format",
+              "initial_prompt": "Based on the user query, select the most appropriate function from the available tools and provide accurate parameter values. Pay close attention to: (1) exact function name, (2) required vs optional parameters, (3) correct parameter types (integer, float, string, boolean, list, dict), and (4) extracting values precisely as they appear in the query.\nEnd with one fenced ```json``` block containing a non-empty list of canonical function-call dicts.\n{context}\nUser Query: {question}\nFunction Call:",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            }
+          ],
+          "terminal_operation": {
+            "type": "mechanical_aggregation",
+            "input_agents": [
+              0,
+              1,
+              2
+            ],
+            "description": "Collect and mechanically aggregate or vote over the three predictor outputs. This operation does not call an LLM, has no Prompt, and must not receive a model assignment."
+          },
+          "runtime_execution": {
+            "runtime_nodes": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "terminal_node": 3,
+            "edges": [
+              [
+                0,
+                3
+              ],
+              [
+                1,
+                3
+              ],
+              [
+                2,
+                3
+              ]
+            ],
+            "topological_order": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "note": "Runtime node 3 is an implementation detail for the mechanical aggregation operation, not an Agent."
+          },
+          "graph_type": "Independent"
+        },
+        "Centralized": {
+          "topology_purpose": "parallel specialist analysis followed by top-level task summarization",
+          "agent_count": 4,
+          "edges": [
+            [
+              0,
+              3
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "topological_order": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "agents": [
+            {
+              "agent_id": 0,
+              "agent_type": "math_agent",
+              "role": "math specialist focusing on rigorous derivation and calculation; dataset focus: tool selection, parameter extraction, and call format",
+              "initial_prompt": "You are a function selection expert. Given the user query and available functions below, analyze which function should be called and explain why.\nConsider: (1) what is the user's intent, (2) which function best matches this intent, (3) why other available functions are not suitable.\nDo NOT output a function call JSON -- only provide a brief text analysis.\n\nInput Question: {question}\n\nYour analysis:",
+              "upstream_agents": [],
+              "downstream_agents": [
+                3
+              ],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 1,
+              "agent_type": "science_agent",
+              "role": "science specialist focusing on facts, evidence, and distractors; dataset focus: tool selection, parameter extraction, and call format",
+              "initial_prompt": "You are a parameter extraction expert. Given the user query and available functions below, identify all parameter values that should be passed to the function.\nFor each parameter: state its value, its type, and where in the user query this value comes from.\nCheck that all required parameters are accounted for.\nDo NOT output a function call JSON -- only provide a brief text analysis.\n\nInput Question: {question}\n\nYour analysis:",
+              "upstream_agents": [],
+              "downstream_agents": [
+                3
+              ],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 2,
+              "agent_type": "code_agent",
+              "role": "coding specialist focusing on algorithms, complexity, and executable code; dataset focus: tool selection, parameter extraction, and call format",
+              "initial_prompt": "You are a format validator. Given the user query and available functions below, verify parameter types, check required vs optional fields, and ensure values are valid.\nSpecifically check: (1) integers are not passed as strings, (2) enum values match allowed choices, (3) all required parameters have values, (4) no hallucinated parameters.\nDo NOT output a function call JSON -- only provide a brief text analysis.\n\nInput Question: {question}\n\nYour analysis:",
+              "upstream_agents": [],
+              "downstream_agents": [
+                3
+              ],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 3,
+              "agent_type": "task_summarizer",
+              "role": "integrates specialist outputs into one reliable final answer; dataset focus: tool selection, parameter extraction, and call format",
+              "initial_prompt": "You are a task synthesizer. Below are analyses from your teammates, the user query, and the available functions.\nBased on these, produce the final function call.\nOutput ONLY a JSON array in this exact format -- no other text:\n\n[{\"name\": \"<function_name>\", \"arguments\": {<param>: <value>, ...}}]\n\nTeammate Analyses:\n{context}\n\nUser Query & Available Functions:\n{question}\n\nFunction Call:",
+              "upstream_agents": [
+                0,
+                1,
+                2
+              ],
+              "downstream_agents": [],
+              "is_terminal": true,
+              "is_optimizable": true
+            }
+          ],
+          "graph_type": "Centralized"
+        },
+        "Sequential": {
+          "topology_purpose": "sequential solving and reflection, with a reflector correcting prior output",
+          "agent_count": 2,
+          "edges": [
+            [
+              0,
+              1
+            ]
+          ],
+          "topological_order": [
+            0,
+            1
+          ],
+          "agents": [
+            {
+              "agent_id": 0,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; dataset focus: tool selection, parameter extraction, and call format",
+              "initial_prompt": "Based on the user query, select the most appropriate function from the available tools and provide accurate parameter values. Pay close attention to: (1) exact function name, (2) required vs optional parameters, (3) correct parameter types (integer, float, string, boolean, list, dict), and (4) extracting values precisely as they appear in the query.\nEnd with one fenced ```json``` block containing a non-empty list of canonical function-call dicts.\n{context}\nUser Query: {question}\nFunction Call:",
+              "upstream_agents": [],
+              "downstream_agents": [
+                1
+              ],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 1,
+              "agent_type": "reflector",
+              "role": "checks correctness, completeness, and format, then corrects the prior result; dataset focus: tool selection, parameter extraction, and call format",
+              "initial_prompt": "Review the function call above for correctness. Check:\n1. Function name: is the correct function selected for this query?\n2. Parameters: are all required parameters present? Are any hallucinated parameters added?\n3. Values: are parameter values extracted accurately from the user query?\n4. Types: are parameter types correct (e.g., integer not string, float not integer)?\nIf any errors are found, provide the corrected function call as a non-empty list of canonical function-call dicts inside one fenced ```json``` block. If the call is already correct, repeat it as-is.\n\nQuestion: {question}\nPrevious call: {context}\nCorrected call:",
+              "upstream_agents": [
+                0
+              ],
+              "downstream_agents": [],
+              "is_terminal": true,
+              "is_optimizable": true
+            }
+          ],
+          "graph_type": "Sequential"
+        },
+        "Decentralized": {
+          "topology_purpose": "multi-persona first-round analysis, cross-review second round, then aggregation",
+          "agent_count": 3,
+          "edges": [],
+          "topological_order": [
+            0,
+            1,
+            2
+          ],
+          "agents": [
+            {
+              "agent_id": 0,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; cross-review upstream parallel analyses; dataset focus: tool selection, parameter extraction, and call format; logical Council member acting in both review stages",
+              "initial_prompt": "You are a Direct Solver: use a direct and reliable method to solve the problem.\n\nSolve the problem independently. If reference results from other Agents are provided, check their correctness, correct them when necessary, and do not copy them blindly.\n\nQuestion:\n{question}\n\n{context_block}\n\nYou are a tool-calling agent.\n\nUse the user request, tool definitions, and other agents' results to produce the correct function calls. Correct any errors you find.\n\nThe required format is a JSON array of function-call objects. In each object, the key is the exact function name and the value is an object of parameter names and values. Do not write field names such as function_name or parameter.\n\nExample format (replace the placeholders; do not output the placeholders):\n\n[\n  {{\n    \"<exact_function_name>\": {{\n      \"<exact_parameter_name>\": <value>\n    }}\n  }}\n]\nUse scalar or structured values exactly as declared by the tool schema; do not wrap values in extra arrays. Put multiple calls in the same array. Output no analysis, explanation, or Markdown.",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 1,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; cross-review upstream parallel analyses; dataset focus: tool selection, parameter extraction, and call format; logical Council member acting in both review stages",
+              "initial_prompt": "You are a Multi-angle Analyst: examine the problem from different angles and choose the most credible conclusion.\n\nSolve the problem independently. If reference results from other Agents are provided, check their correctness, correct them when necessary, and do not copy them blindly.\n\nQuestion:\n{question}\n\n{context_block}\n\nYou are a tool-calling agent.\n\nUse the user request, tool definitions, and other agents' results to produce the correct function calls. Correct any errors you find.\n\nThe required format is a JSON array of function-call objects. In each object, the key is the exact function name and the value is an object of parameter names and values. Do not write field names such as function_name or parameter.\n\nExample format (replace the placeholders; do not output the placeholders):\n\n[\n  {{\n    \"<exact_function_name>\": {{\n      \"<exact_parameter_name>\": <value>\n    }}\n  }}\n]\nUse scalar or structured values exactly as declared by the tool schema; do not wrap values in extra arrays. Put multiple calls in the same array. Output no analysis, explanation, or Markdown.",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 2,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; cross-review upstream parallel analyses; dataset focus: tool selection, parameter extraction, and call format; logical Council member acting in both review stages",
+              "initial_prompt": "You are a Result Verifier: focus on finding errors, contradictions, omissions, and edge cases.\n\nSolve the problem independently. If reference results from other Agents are provided, check their correctness, correct them when necessary, and do not copy them blindly.\n\nQuestion:\n{question}\n\n{context_block}\n\nYou are a tool-calling agent.\n\nUse the user request, tool definitions, and other agents' results to produce the correct function calls. Correct any errors you find.\n\nThe required format is a JSON array of function-call objects. In each object, the key is the exact function name and the value is an object of parameter names and values. Do not write field names such as function_name or parameter.\n\nExample format (replace the placeholders; do not output the placeholders):\n\n[\n  {{\n    \"<exact_function_name>\": {{\n      \"<exact_parameter_name>\": <value>\n    }}\n  }}\n]\nUse scalar or structured values exactly as declared by the tool schema; do not wrap values in extra arrays. Put multiple calls in the same array. Output no analysis, explanation, or Markdown.",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            }
+          ],
+          "execution_stages": [
+            {
+              "stage": 1,
+              "description": "The three logical Council members independently analyze the original problem."
+            },
+            {
+              "stage": 2,
+              "description": "The same three logical Council members review the first-stage analyses of the other members and revise their conclusions."
+            }
+          ],
+          "shared_runtime_groups": [
+            [
+              0,
+              3
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              2,
+              5
+            ]
+          ],
+          "terminal_operation": {
+            "type": "mechanical_vote",
+            "input_logical_agents": [
+              0,
+              1,
+              2
+            ],
+            "description": "Mechanically vote over the three second-stage conclusions. This operation does not call an LLM, has no Prompt, and must not receive a model assignment."
+          },
+          "runtime_execution": {
+            "runtime_nodes": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "round1_nodes": [
+              0,
+              1,
+              2
+            ],
+            "round2_nodes": [
+              3,
+              4,
+              5
+            ],
+            "logical_mapping": {
+              "0": [
+                0,
+                3
+              ],
+              "1": [
+                1,
+                4
+              ],
+              "2": [
+                2,
+                5
+              ]
+            },
+            "terminal_node": 6,
+            "edges": [
+              [
+                0,
+                3
+              ],
+              [
+                0,
+                4
+              ],
+              [
+                0,
+                5
+              ],
+              [
+                1,
+                3
+              ],
+              [
+                1,
+                4
+              ],
+              [
+                1,
+                5
+              ],
+              [
+                2,
+                3
+              ],
+              [
+                2,
+                4
+              ],
+              [
+                2,
+                5
+              ],
+              [
+                3,
+                6
+              ],
+              [
+                4,
+                6
+              ],
+              [
+                5,
+                6
+              ]
+            ],
+            "topological_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "note": "Runtime nodes 3-5 are second-stage instances of logical members 0-2; runtime node 6 is the mechanical voter. They are not independent optimization variables."
+          },
+          "graph_type": "Decentralized"
+        }
+      }
+    },
+    "lcb": {
+      "actual_dataset": "livecodebench_v6",
+      "task_type": "code_generation",
+      "task_focus": "algorithm design, code generation, and test passing",
+      "graphs": {
+        "Independent": {
+          "topology_purpose": "parallel independent solving followed by terminal aggregation or voting",
+          "agent_count": 3,
+          "edges": [],
+          "topological_order": [
+            0,
+            1,
+            2
+          ],
+          "agents": [
+            {
+              "agent_id": 0,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; dataset focus: algorithm design, code generation, and test passing",
+              "initial_prompt": "You are a competitive programming expert. Solve the problem below by writing clean, correct Python 3 code.\nCRITICAL RULES:\n1. Read input from sys.stdin (standard input)\n2. Print output to sys.stdout (standard output)\n3. Output ONLY the Python code inside a ```python code block\n4. Do NOT include explanations, analysis, or markdown outside the code block\n5. The code must handle all edge cases within the given constraints\n\n{context}\n\nProblem:\n{question}\n\nYour solution (```python block only):",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 1,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; dataset focus: algorithm design, code generation, and test passing",
+              "initial_prompt": "You are a competitive programming expert. Solve the problem below by writing clean, correct Python 3 code.\nCRITICAL RULES:\n1. Read input from sys.stdin (standard input)\n2. Print output to sys.stdout (standard output)\n3. Output ONLY the Python code inside a ```python code block\n4. Do NOT include explanations, analysis, or markdown outside the code block\n5. The code must handle all edge cases within the given constraints\n\n{context}\n\nProblem:\n{question}\n\nYour solution (```python block only):",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 2,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; dataset focus: algorithm design, code generation, and test passing",
+              "initial_prompt": "You are a competitive programming expert. Solve the problem below by writing clean, correct Python 3 code.\nCRITICAL RULES:\n1. Read input from sys.stdin (standard input)\n2. Print output to sys.stdout (standard output)\n3. Output ONLY the Python code inside a ```python code block\n4. Do NOT include explanations, analysis, or markdown outside the code block\n5. The code must handle all edge cases within the given constraints\n\n{context}\n\nProblem:\n{question}\n\nYour solution (```python block only):",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            }
+          ],
+          "terminal_operation": {
+            "type": "mechanical_aggregation",
+            "input_agents": [
+              0,
+              1,
+              2
+            ],
+            "description": "Collect and mechanically aggregate or vote over the three predictor outputs. This operation does not call an LLM, has no Prompt, and must not receive a model assignment."
+          },
+          "runtime_execution": {
+            "runtime_nodes": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "terminal_node": 3,
+            "edges": [
+              [
+                0,
+                3
+              ],
+              [
+                1,
+                3
+              ],
+              [
+                2,
+                3
+              ]
+            ],
+            "topological_order": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "note": "Runtime node 3 is an implementation detail for the mechanical aggregation operation, not an Agent."
+          },
+          "graph_type": "Independent"
+        },
+        "Centralized": {
+          "topology_purpose": "parallel specialist analysis followed by top-level task summarization",
+          "agent_count": 4,
+          "edges": [
+            [
+              0,
+              3
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "topological_order": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "agents": [
+            {
+              "agent_id": 0,
+              "agent_type": "math_agent",
+              "role": "math specialist focusing on rigorous derivation and calculation; dataset focus: algorithm design, code generation, and test passing",
+              "initial_prompt": "You are an algorithm analyst for a competitive programming problem.\nOutput EXACTLY 3 lines and nothing else.\nLine 1: Algorithm: <at most 8 words>\nLine 2: Data structures: <at most 8 words>\nLine 3: Key idea: <at most 12 words>\nDo NOT write code. Do NOT explain. Do NOT use bullets or markdown.\n\nProblem:\n{question}\n",
+              "upstream_agents": [],
+              "downstream_agents": [
+                3
+              ],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 1,
+              "agent_type": "science_agent",
+              "role": "science specialist focusing on facts, evidence, and distractors; dataset focus: algorithm design, code generation, and test passing",
+              "initial_prompt": "You are an edge-case analyst for a competitive programming problem.\nOutput EXACTLY 3 lines and nothing else.\nLine 1: Edge case 1: <at most 12 words>\nLine 2: Edge case 2: <at most 12 words>\nLine 3: IO note: <at most 12 words>\nDo NOT write code. Do NOT explain. Do NOT use bullets or markdown.\n\nProblem:\n{question}\n",
+              "upstream_agents": [],
+              "downstream_agents": [
+                3
+              ],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 2,
+              "agent_type": "code_agent",
+              "role": "coding specialist focusing on algorithms, complexity, and executable code; dataset focus: algorithm design, code generation, and test passing",
+              "initial_prompt": "You are a complexity analyst for a competitive programming problem.\nOutput EXACTLY 3 lines and nothing else.\nLine 1: Time: O(...)\nLine 2: Space: O(...)\nLine 3: Constraint driver: <at most 12 words>\nDo NOT write code. Do NOT explain. Do NOT use bullets or markdown.\n\nProblem:\n{question}\n",
+              "upstream_agents": [],
+              "downstream_agents": [
+                3
+              ],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 3,
+              "agent_type": "task_summarizer",
+              "role": "integrates specialist outputs into one reliable final answer; dataset focus: algorithm design, code generation, and test passing",
+              "initial_prompt": "You are a competitive programmer.\nUse the three short teammate notes below only as hints.\nOutput RAW Python 3 code only. No markdown fence. No prose. No comments.\nThe first line must start with import, from, or def.\nThe code must read from stdin and write to stdout.\nKeep the implementation concise and avoid restating the analysis.\n\nTeammate notes:\n{context}\n\nProblem:\n{question}\n",
+              "upstream_agents": [
+                0,
+                1,
+                2
+              ],
+              "downstream_agents": [],
+              "is_terminal": true,
+              "is_optimizable": true
+            }
+          ],
+          "graph_type": "Centralized"
+        },
+        "Sequential": {
+          "topology_purpose": "sequential solving and reflection, with a reflector correcting prior output",
+          "agent_count": 2,
+          "edges": [
+            [
+              0,
+              1
+            ]
+          ],
+          "topological_order": [
+            0,
+            1
+          ],
+          "agents": [
+            {
+              "agent_id": 0,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; dataset focus: algorithm design, code generation, and test passing",
+              "initial_prompt": "You are a competitive programming expert. Solve the problem below by writing clean, correct Python 3 code.\nCRITICAL RULES:\n1. Read input from sys.stdin (standard input)\n2. Print output to sys.stdout (standard output)\n3. Output ONLY the Python code inside a ```python code block\n4. Do NOT include explanations, analysis, or markdown outside the code block\n5. The code must handle all edge cases within the given constraints\n\n{context}\n\nProblem:\n{question}\n\nYour solution (```python block only):",
+              "upstream_agents": [],
+              "downstream_agents": [
+                1
+              ],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 1,
+              "agent_type": "reflector",
+              "role": "checks correctness, completeness, and format, then corrects the prior result; dataset focus: algorithm design, code generation, and test passing",
+              "initial_prompt": "You are a strict code reviewer. The code below attempts to solve the given problem.\nFind any bugs, logic errors, edge cases, or performance issues.\nThen OUTPUT ONLY the fully corrected Python code inside a ```python code block.\nDO NOT write analysis, explanations, or lists of issues. ONLY output the corrected code.\n\nProblem:\n{question}\n\nCurrent code:\n{context}\n\nCorrected code (```python block only):",
+              "upstream_agents": [
+                0
+              ],
+              "downstream_agents": [],
+              "is_terminal": true,
+              "is_optimizable": true
+            }
+          ],
+          "graph_type": "Sequential"
+        },
+        "Decentralized": {
+          "topology_purpose": "multi-persona first-round analysis, cross-review second round, then aggregation",
+          "agent_count": 3,
+          "edges": [],
+          "topological_order": [
+            0,
+            1,
+            2
+          ],
+          "agents": [
+            {
+              "agent_id": 0,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; cross-review upstream parallel analyses; dataset focus: algorithm design, code generation, and test passing; logical Council member acting in both review stages",
+              "initial_prompt": "You are a Direct Solver: use a direct and reliable method to solve the problem.\n\nSolve the problem independently. If reference results from other Agents are provided, check their correctness, correct them when necessary, and do not copy them blindly.\n\nQuestion:\n{question}\n\n{context_block}\n\nThe final output must be complete, executable Python code.\nOutput only one Python code block; do not output analysis, explanation, or any other text:\n\n```python\n# code\n```",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 1,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; cross-review upstream parallel analyses; dataset focus: algorithm design, code generation, and test passing; logical Council member acting in both review stages",
+              "initial_prompt": "You are a Multi-angle Analyst: examine the problem from different angles and choose the most credible conclusion.\n\nSolve the problem independently. If reference results from other Agents are provided, check their correctness, correct them when necessary, and do not copy them blindly.\n\nQuestion:\n{question}\n\n{context_block}\n\nThe final output must be complete, executable Python code.\nOutput only one Python code block; do not output analysis, explanation, or any other text:\n\n```python\n# code\n```",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 2,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; cross-review upstream parallel analyses; dataset focus: algorithm design, code generation, and test passing; logical Council member acting in both review stages",
+              "initial_prompt": "You are a Result Verifier: focus on finding errors, contradictions, omissions, and edge cases.\n\nSolve the problem independently. If reference results from other Agents are provided, check their correctness, correct them when necessary, and do not copy them blindly.\n\nQuestion:\n{question}\n\n{context_block}\n\nThe final output must be complete, executable Python code.\nOutput only one Python code block; do not output analysis, explanation, or any other text:\n\n```python\n# code\n```",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            }
+          ],
+          "execution_stages": [
+            {
+              "stage": 1,
+              "description": "The three logical Council members independently analyze the original problem."
+            },
+            {
+              "stage": 2,
+              "description": "The same three logical Council members review the first-stage analyses of the other members and revise their conclusions."
+            }
+          ],
+          "shared_runtime_groups": [
+            [
+              0,
+              3
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              2,
+              5
+            ]
+          ],
+          "terminal_operation": {
+            "type": "mechanical_vote",
+            "input_logical_agents": [
+              0,
+              1,
+              2
+            ],
+            "description": "Mechanically vote over the three second-stage conclusions. This operation does not call an LLM, has no Prompt, and must not receive a model assignment."
+          },
+          "runtime_execution": {
+            "runtime_nodes": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "round1_nodes": [
+              0,
+              1,
+              2
+            ],
+            "round2_nodes": [
+              3,
+              4,
+              5
+            ],
+            "logical_mapping": {
+              "0": [
+                0,
+                3
+              ],
+              "1": [
+                1,
+                4
+              ],
+              "2": [
+                2,
+                5
+              ]
+            },
+            "terminal_node": 6,
+            "edges": [
+              [
+                0,
+                3
+              ],
+              [
+                0,
+                4
+              ],
+              [
+                0,
+                5
+              ],
+              [
+                1,
+                3
+              ],
+              [
+                1,
+                4
+              ],
+              [
+                1,
+                5
+              ],
+              [
+                2,
+                3
+              ],
+              [
+                2,
+                4
+              ],
+              [
+                2,
+                5
+              ],
+              [
+                3,
+                6
+              ],
+              [
+                4,
+                6
+              ],
+              [
+                5,
+                6
+              ]
+            ],
+            "topological_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "note": "Runtime nodes 3-5 are second-stage instances of logical members 0-2; runtime node 6 is the mechanical voter. They are not independent optimization variables."
+          },
+          "graph_type": "Decentralized"
+        }
+      }
+    },
+    "hotpotqa": {
+      "actual_dataset": "hotpotqa",
+      "task_type": "qa",
+      "task_focus": "multi-hop evidence chaining and answer synthesis",
+      "graphs": {
+        "Independent": {
+          "topology_purpose": "parallel independent solving followed by terminal aggregation or voting",
+          "agent_count": 3,
+          "edges": [],
+          "topological_order": [
+            0,
+            1,
+            2
+          ],
+          "agents": [
+            {
+              "agent_id": 0,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; dataset focus: multi-hop evidence chaining and answer synthesis",
+              "initial_prompt": "Read all documents carefully. Answer the question by finding and connecting information across multiple documents. Think step by step: (1) identify relevant documents, (2) extract key facts, (3) bridge information across documents, (4) derive the final answer. Put your step-by-step reasoning BEFORE the answer tags. The <answer>...</answer> tags must contain ONLY the final short answer (1-5 words), with NO reasoning inside.\n{context}\n\nQuestion: {question}\nAnswer:",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 1,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; dataset focus: multi-hop evidence chaining and answer synthesis",
+              "initial_prompt": "Read all documents carefully. Answer the question by finding and connecting information across multiple documents. Think step by step: (1) identify relevant documents, (2) extract key facts, (3) bridge information across documents, (4) derive the final answer. Put your step-by-step reasoning BEFORE the answer tags. The <answer>...</answer> tags must contain ONLY the final short answer (1-5 words), with NO reasoning inside.\n{context}\n\nQuestion: {question}\nAnswer:",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 2,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; dataset focus: multi-hop evidence chaining and answer synthesis",
+              "initial_prompt": "Read all documents carefully. Answer the question by finding and connecting information across multiple documents. Think step by step: (1) identify relevant documents, (2) extract key facts, (3) bridge information across documents, (4) derive the final answer. Put your step-by-step reasoning BEFORE the answer tags. The <answer>...</answer> tags must contain ONLY the final short answer (1-5 words), with NO reasoning inside.\n{context}\n\nQuestion: {question}\nAnswer:",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            }
+          ],
+          "terminal_operation": {
+            "type": "mechanical_aggregation",
+            "input_agents": [
+              0,
+              1,
+              2
+            ],
+            "description": "Collect and mechanically aggregate or vote over the three predictor outputs. This operation does not call an LLM, has no Prompt, and must not receive a model assignment."
+          },
+          "runtime_execution": {
+            "runtime_nodes": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "terminal_node": 3,
+            "edges": [
+              [
+                0,
+                3
+              ],
+              [
+                1,
+                3
+              ],
+              [
+                2,
+                3
+              ]
+            ],
+            "topological_order": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "note": "Runtime node 3 is an implementation detail for the mechanical aggregation operation, not an Agent."
+          },
+          "graph_type": "Independent"
+        },
+        "Centralized": {
+          "topology_purpose": "parallel specialist analysis followed by top-level task summarization",
+          "agent_count": 4,
+          "edges": [
+            [
+              0,
+              3
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "topological_order": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "agents": [
+            {
+              "agent_id": 0,
+              "agent_type": "math_agent",
+              "role": "math specialist focusing on rigorous derivation and calculation; dataset focus: multi-hop evidence chaining and answer synthesis",
+              "initial_prompt": "You are a Document Analyst. Read all provided documents and extract all facts relevant to the question. List key entities, relationships, and potential connections between documents. Be thorough and precise.\n\n{context}\n\nQuestion: {question}\n\nRelevant facts and connections:",
+              "upstream_agents": [],
+              "downstream_agents": [
+                3
+              ],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 1,
+              "agent_type": "science_agent",
+              "role": "science specialist focusing on facts, evidence, and distractors; dataset focus: multi-hop evidence chaining and answer synthesis",
+              "initial_prompt": "You are an Evidence Validator. Review the extracted facts and verify each one against the source documents. Flag any unsupported claims, identify the strongest evidence chains, and note any gaps in reasoning.\n\n{context}\n\nQuestion: {question}\n\nValidated evidence and gaps:",
+              "upstream_agents": [],
+              "downstream_agents": [
+                3
+              ],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 2,
+              "agent_type": "code_agent",
+              "role": "coding specialist focusing on algorithms, complexity, and executable code; dataset focus: multi-hop evidence chaining and answer synthesis",
+              "initial_prompt": "You are a Reasoning Specialist. Using the validated evidence, construct a step-by-step reasoning chain that connects the documents to answer the question. Each step must be grounded in specific document facts.\n\n{context}\n\nQuestion: {question}\n\nStep-by-step reasoning chain:",
+              "upstream_agents": [],
+              "downstream_agents": [
+                3
+              ],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 3,
+              "agent_type": "task_summarizer",
+              "role": "integrates specialist outputs into one reliable final answer; dataset focus: multi-hop evidence chaining and answer synthesis",
+              "initial_prompt": "You are a Task Summarizer. Review all the analyses above and produce the final answer to the question. Synthesize the document analysis, evidence validation, and reasoning chain. Output ONLY the short final answer (1-5 words) in <answer>...</answer> tags. Do NOT include reasoning inside the tags.\n\n{context}\n\nQuestion: {question}\n\nFinal answer:",
+              "upstream_agents": [
+                0,
+                1,
+                2
+              ],
+              "downstream_agents": [],
+              "is_terminal": true,
+              "is_optimizable": true
+            }
+          ],
+          "graph_type": "Centralized"
+        },
+        "Sequential": {
+          "topology_purpose": "sequential solving and reflection, with a reflector correcting prior output",
+          "agent_count": 2,
+          "edges": [
+            [
+              0,
+              1
+            ]
+          ],
+          "topological_order": [
+            0,
+            1
+          ],
+          "agents": [
+            {
+              "agent_id": 0,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; dataset focus: multi-hop evidence chaining and answer synthesis",
+              "initial_prompt": "Read all documents carefully. Answer the question by finding and connecting information across multiple documents. Think step by step: (1) identify relevant documents, (2) extract key facts, (3) bridge information across documents, (4) derive the final answer. Put your step-by-step reasoning BEFORE the answer tags. The <answer>...</answer> tags must contain ONLY the final short answer (1-5 words), with NO reasoning inside.\n{context}\n\nQuestion: {question}\nAnswer:",
+              "upstream_agents": [],
+              "downstream_agents": [
+                1
+              ],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 1,
+              "agent_type": "reflector",
+              "role": "checks correctness, completeness, and format, then corrects the prior result; dataset focus: multi-hop evidence chaining and answer synthesis",
+              "initial_prompt": "Review the previous answer against all provided documents and the question below. Check for: (1) missing cross-document connections, (2) incorrect information extraction, (3) incomplete reasoning chains. Put your review reasoning BEFORE the answer tags. The <answer>...</answer> tags must contain ONLY the corrected short answer (1-5 words), with NO reasoning inside.\n{question}\n\nPrevious answer: {context}\n\nReview and corrected answer:",
+              "upstream_agents": [
+                0
+              ],
+              "downstream_agents": [],
+              "is_terminal": true,
+              "is_optimizable": true
+            }
+          ],
+          "graph_type": "Sequential"
+        },
+        "Decentralized": {
+          "topology_purpose": "multi-persona first-round analysis, cross-review second round, then aggregation",
+          "agent_count": 3,
+          "edges": [],
+          "topological_order": [
+            0,
+            1,
+            2
+          ],
+          "agents": [
+            {
+              "agent_id": 0,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; cross-review upstream parallel analyses; dataset focus: multi-hop evidence chaining and answer synthesis; logical Council member acting in both review stages",
+              "initial_prompt": "You are a Direct Solver: use a direct and reliable method to solve the problem.\n\nSolve the problem independently. If reference results from other Agents are provided, check their correctness, correct them when necessary, and do not copy them blindly.\n\nQuestion:\n{question}\n\n{context_block}\n\nRetain the necessary reasoning and write the final result exactly as follows:\n<answer>FINAL_ANSWER</answer>\n\nThe tag must contain only the final answer, with no analysis or explanation.",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 1,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; cross-review upstream parallel analyses; dataset focus: multi-hop evidence chaining and answer synthesis; logical Council member acting in both review stages",
+              "initial_prompt": "You are a Multi-angle Analyst: examine the problem from different angles and choose the most credible conclusion.\n\nSolve the problem independently. If reference results from other Agents are provided, check their correctness, correct them when necessary, and do not copy them blindly.\n\nQuestion:\n{question}\n\n{context_block}\n\nRetain the necessary reasoning and write the final result exactly as follows:\n<answer>FINAL_ANSWER</answer>\n\nThe tag must contain only the final answer, with no analysis or explanation.",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 2,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; cross-review upstream parallel analyses; dataset focus: multi-hop evidence chaining and answer synthesis; logical Council member acting in both review stages",
+              "initial_prompt": "You are a Result Verifier: focus on finding errors, contradictions, omissions, and edge cases.\n\nSolve the problem independently. If reference results from other Agents are provided, check their correctness, correct them when necessary, and do not copy them blindly.\n\nQuestion:\n{question}\n\n{context_block}\n\nRetain the necessary reasoning and write the final result exactly as follows:\n<answer>FINAL_ANSWER</answer>\n\nThe tag must contain only the final answer, with no analysis or explanation.",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            }
+          ],
+          "execution_stages": [
+            {
+              "stage": 1,
+              "description": "The three logical Council members independently analyze the original problem."
+            },
+            {
+              "stage": 2,
+              "description": "The same three logical Council members review the first-stage analyses of the other members and revise their conclusions."
+            }
+          ],
+          "shared_runtime_groups": [
+            [
+              0,
+              3
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              2,
+              5
+            ]
+          ],
+          "terminal_operation": {
+            "type": "mechanical_vote",
+            "input_logical_agents": [
+              0,
+              1,
+              2
+            ],
+            "description": "Mechanically vote over the three second-stage conclusions. This operation does not call an LLM, has no Prompt, and must not receive a model assignment."
+          },
+          "runtime_execution": {
+            "runtime_nodes": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "round1_nodes": [
+              0,
+              1,
+              2
+            ],
+            "round2_nodes": [
+              3,
+              4,
+              5
+            ],
+            "logical_mapping": {
+              "0": [
+                0,
+                3
+              ],
+              "1": [
+                1,
+                4
+              ],
+              "2": [
+                2,
+                5
+              ]
+            },
+            "terminal_node": 6,
+            "edges": [
+              [
+                0,
+                3
+              ],
+              [
+                0,
+                4
+              ],
+              [
+                0,
+                5
+              ],
+              [
+                1,
+                3
+              ],
+              [
+                1,
+                4
+              ],
+              [
+                1,
+                5
+              ],
+              [
+                2,
+                3
+              ],
+              [
+                2,
+                4
+              ],
+              [
+                2,
+                5
+              ],
+              [
+                3,
+                6
+              ],
+              [
+                4,
+                6
+              ],
+              [
+                5,
+                6
+              ]
+            ],
+            "topological_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "note": "Runtime nodes 3-5 are second-stage instances of logical members 0-2; runtime node 6 is the mechanical voter. They are not independent optimization variables."
+          },
+          "graph_type": "Decentralized"
+        }
+      }
+    },
+    "gpqa": {
+      "actual_dataset": "gpqa",
+      "task_type": "reasoning_choice",
+      "task_focus": "difficult scientific multiple-choice reasoning",
+      "graphs": {
+        "Independent": {
+          "topology_purpose": "parallel independent solving followed by terminal aggregation or voting",
+          "agent_count": 3,
+          "edges": [],
+          "topological_order": [
+            0,
+            1,
+            2
+          ],
+          "agents": [
+            {
+              "agent_id": 0,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; dataset focus: difficult scientific multiple-choice reasoning",
+              "initial_prompt": "Analyze the problem in 2-3 key steps. Show your final option between <answer> and </answer> tags.\n{context}\nQuestion: {question}\nReasoning:",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 1,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; dataset focus: difficult scientific multiple-choice reasoning",
+              "initial_prompt": "Analyze the problem in 2-3 key steps. Show your final option between <answer> and </answer> tags.\n{context}\nQuestion: {question}\nReasoning:",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 2,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; dataset focus: difficult scientific multiple-choice reasoning",
+              "initial_prompt": "Analyze the problem in 2-3 key steps. Show your final option between <answer> and </answer> tags.\n{context}\nQuestion: {question}\nReasoning:",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            }
+          ],
+          "terminal_operation": {
+            "type": "mechanical_aggregation",
+            "input_agents": [
+              0,
+              1,
+              2
+            ],
+            "description": "Collect and mechanically aggregate or vote over the three predictor outputs. This operation does not call an LLM, has no Prompt, and must not receive a model assignment."
+          },
+          "runtime_execution": {
+            "runtime_nodes": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "terminal_node": 3,
+            "edges": [
+              [
+                0,
+                3
+              ],
+              [
+                1,
+                3
+              ],
+              [
+                2,
+                3
+              ]
+            ],
+            "topological_order": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "note": "Runtime node 3 is an implementation detail for the mechanical aggregation operation, not an Agent."
+          },
+          "graph_type": "Independent"
+        },
+        "Centralized": {
+          "topology_purpose": "parallel specialist analysis followed by top-level task summarization",
+          "agent_count": 4,
+          "edges": [
+            [
+              0,
+              3
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "topological_order": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "agents": [
+            {
+              "agent_id": 0,
+              "agent_type": "math_agent",
+              "role": "math specialist focusing on rigorous derivation and calculation; dataset focus: difficult scientific multiple-choice reasoning",
+              "initial_prompt": "You are a math agent. Given the input question, reason step-by-step and put the final answer inside <answer>YOUR_FINAL_CHOICE</answer>. Your final answer must be selected from A,B,C,D. For example <answer>A</answer>. Do not add any other contents inside the box. \n\nInput Question: {question}\n\nYour response:",
+              "upstream_agents": [],
+              "downstream_agents": [
+                3
+              ],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 1,
+              "agent_type": "science_agent",
+              "role": "science specialist focusing on facts, evidence, and distractors; dataset focus: difficult scientific multiple-choice reasoning",
+              "initial_prompt": "You are a science agent. Given the input question, reason step-by-step and put the final answer inside <answer>YOUR_FINAL_CHOICE</answer>. Your final answer must be selected from A,B,C,D. For example <answer>A</answer>. Do not add any other contents inside the box. \n\nInput Question: {question}\n\nYour response:",
+              "upstream_agents": [],
+              "downstream_agents": [
+                3
+              ],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 2,
+              "agent_type": "code_agent",
+              "role": "coding specialist focusing on algorithms, complexity, and executable code; dataset focus: difficult scientific multiple-choice reasoning",
+              "initial_prompt": "You are a code agent. Given the input question, reason step-by-step and put the final answer inside <answer>YOUR_FINAL_CHOICE</answer>. Your final answer must be selected from A,B,C,D. For example <answer>A</answer>. Do not add any other contents inside the box. \n\nInput Question: {question}\n\nYour response:",
+              "upstream_agents": [],
+              "downstream_agents": [
+                3
+              ],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 3,
+              "agent_type": "task_summarizer",
+              "role": "integrates specialist outputs into one reliable final answer; dataset focus: difficult scientific multiple-choice reasoning",
+              "initial_prompt": "You are a task summarizer. Given the final answer inside <answer>YOUR_FINAL_CHOICE</answer>. Your final answer must be selected from A,B,C,D. For example <answer>A</answer>. Do not add any other contents inside the box. \n\nContent from Previous Agent:\n{context}\n\nInput Question: {question}\n\nYour response:",
+              "upstream_agents": [
+                0,
+                1,
+                2
+              ],
+              "downstream_agents": [],
+              "is_terminal": true,
+              "is_optimizable": true
+            }
+          ],
+          "graph_type": "Centralized"
+        },
+        "Sequential": {
+          "topology_purpose": "sequential solving and reflection, with a reflector correcting prior output",
+          "agent_count": 2,
+          "edges": [
+            [
+              0,
+              1
+            ]
+          ],
+          "topological_order": [
+            0,
+            1
+          ],
+          "agents": [
+            {
+              "agent_id": 0,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; dataset focus: difficult scientific multiple-choice reasoning",
+              "initial_prompt": "Analyze the problem in 2-3 key steps. Show your final option between <answer> and </answer> tags.\n{context}\nQuestion: {question}\nReasoning:",
+              "upstream_agents": [],
+              "downstream_agents": [
+                1
+              ],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 1,
+              "agent_type": "reflector",
+              "role": "checks correctness, completeness, and format, then corrects the prior result; dataset focus: difficult scientific multiple-choice reasoning",
+              "initial_prompt": "Please review the solution above and criticize where it might be wrong. Show your final option with one letter bracketed between <answer> and </answer>.\nQuestion: {question}\nSolution: {context}\nFeedback: indicating the reflection of the solution given the question.\nCorrect answer:",
+              "upstream_agents": [
+                0
+              ],
+              "downstream_agents": [],
+              "is_terminal": true,
+              "is_optimizable": true
+            }
+          ],
+          "graph_type": "Sequential"
+        },
+        "Decentralized": {
+          "topology_purpose": "multi-persona first-round analysis, cross-review second round, then aggregation",
+          "agent_count": 3,
+          "edges": [],
+          "topological_order": [
+            0,
+            1,
+            2
+          ],
+          "agents": [
+            {
+              "agent_id": 0,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; cross-review upstream parallel analyses; dataset focus: difficult scientific multiple-choice reasoning; logical Council member acting in both review stages",
+              "initial_prompt": "You are a Direct Solver: use a direct and reliable method to solve the problem.\n\nSolve the problem independently. If reference results from other Agents are provided, check their correctness, correct them when necessary, and do not copy them blindly.\n\nQuestion:\n{question}\n\n{context_block}\n\nRetain the necessary reasoning and write the final result exactly as follows:\n<answer>FINAL_ANSWER</answer>\n\nThe tag must contain only the final answer, with no analysis or explanation.",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 1,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; cross-review upstream parallel analyses; dataset focus: difficult scientific multiple-choice reasoning; logical Council member acting in both review stages",
+              "initial_prompt": "You are a Multi-angle Analyst: examine the problem from different angles and choose the most credible conclusion.\n\nSolve the problem independently. If reference results from other Agents are provided, check their correctness, correct them when necessary, and do not copy them blindly.\n\nQuestion:\n{question}\n\n{context_block}\n\nRetain the necessary reasoning and write the final result exactly as follows:\n<answer>FINAL_ANSWER</answer>\n\nThe tag must contain only the final answer, with no analysis or explanation.",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            },
+            {
+              "agent_id": 2,
+              "agent_type": "predictor",
+              "role": "independent task solver or generator; cross-review upstream parallel analyses; dataset focus: difficult scientific multiple-choice reasoning; logical Council member acting in both review stages",
+              "initial_prompt": "You are a Result Verifier: focus on finding errors, contradictions, omissions, and edge cases.\n\nSolve the problem independently. If reference results from other Agents are provided, check their correctness, correct them when necessary, and do not copy them blindly.\n\nQuestion:\n{question}\n\n{context_block}\n\nRetain the necessary reasoning and write the final result exactly as follows:\n<answer>FINAL_ANSWER</answer>\n\nThe tag must contain only the final answer, with no analysis or explanation.",
+              "upstream_agents": [],
+              "downstream_agents": [],
+              "is_terminal": false,
+              "is_optimizable": true
+            }
+          ],
+          "execution_stages": [
+            {
+              "stage": 1,
+              "description": "The three logical Council members independently analyze the original problem."
+            },
+            {
+              "stage": 2,
+              "description": "The same three logical Council members review the first-stage analyses of the other members and revise their conclusions."
+            }
+          ],
+          "shared_runtime_groups": [
+            [
+              0,
+              3
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              2,
+              5
+            ]
+          ],
+          "terminal_operation": {
+            "type": "mechanical_vote",
+            "input_logical_agents": [
+              0,
+              1,
+              2
+            ],
+            "description": "Mechanically vote over the three second-stage conclusions. This operation does not call an LLM, has no Prompt, and must not receive a model assignment."
+          },
+          "runtime_execution": {
+            "runtime_nodes": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "round1_nodes": [
+              0,
+              1,
+              2
+            ],
+            "round2_nodes": [
+              3,
+              4,
+              5
+            ],
+            "logical_mapping": {
+              "0": [
+                0,
+                3
+              ],
+              "1": [
+                1,
+                4
+              ],
+              "2": [
+                2,
+                5
+              ]
+            },
+            "terminal_node": 6,
+            "edges": [
+              [
+                0,
+                3
+              ],
+              [
+                0,
+                4
+              ],
+              [
+                0,
+                5
+              ],
+              [
+                1,
+                3
+              ],
+              [
+                1,
+                4
+              ],
+              [
+                1,
+                5
+              ],
+              [
+                2,
+                3
+              ],
+              [
+                2,
+                4
+              ],
+              [
+                2,
+                5
+              ],
+              [
+                3,
+                6
+              ],
+              [
+                4,
+                6
+              ],
+              [
+                5,
+                6
+              ]
+            ],
+            "topological_order": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "note": "Runtime nodes 3-5 are second-stage instances of logical members 0-2; runtime node 6 is the mechanical voter. They are not independent optimization variables."
+          },
+          "graph_type": "Decentralized"
+        }
+      }
+    }
+  }
+}

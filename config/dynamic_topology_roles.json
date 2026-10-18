@@ -1,0 +1,52 @@
+{
+  "bfcl_v3": {
+    "task_type": "function_calling",
+    "roles": [
+      {"agent_id": 0, "name": "Intent Analyzer", "description": "Identify the user's intent and required operations."},
+      {"agent_id": 1, "name": "Function Matcher", "description": "Select the appropriate functions and map arguments."},
+      {"agent_id": 2, "name": "Tool-Call Validator", "description": "Check function names, arguments, and call order."},
+      {"agent_id": 3, "name": "Function-Call Refiner", "description": "Resolve omissions and inconsistencies in the proposed calls."},
+      {"agent_id": 4, "name": "Final Function-Call Generator", "description": "Return the required canonical function-call JSON."}
+    ]
+  },
+  "gpqa": {
+    "task_type": "reasoning_choice",
+    "roles": [
+      {"agent_id": 0, "name": "Problem Analyst", "description": "Parse the question and identify the central problem."},
+      {"agent_id": 1, "name": "Domain Reasoner", "description": "Apply relevant domain knowledge to solve the problem."},
+      {"agent_id": 2, "name": "Evidence Checker", "description": "Check the reasoning, assumptions, and candidate choices."},
+      {"agent_id": 3, "name": "Critical Reviewer", "description": "Find errors and resolve competing explanations."},
+      {"agent_id": 4, "name": "Final Answer Selector", "description": "Return the single best answer in the required format."}
+    ]
+  },
+  "livecodebench_v6": {
+    "task_type": "code_generation",
+    "roles": [
+      {"agent_id": 0, "name": "Problem Interpreter", "description": "Extract requirements, inputs, outputs, and constraints."},
+      {"agent_id": 1, "name": "Algorithm Designer", "description": "Design an appropriate algorithm and complexity strategy."},
+      {"agent_id": 2, "name": "Implementation Engineer", "description": "Implement a complete solution that follows the specification."},
+      {"agent_id": 3, "name": "Code Reviewer", "description": "Check correctness, edge cases, and implementation details."},
+      {"agent_id": 4, "name": "Final Code Emitter", "description": "Return only the final executable code in the required format."}
+    ]
+  },
+  "agi": {
+    "task_type": "qa",
+    "roles": [
+      {"agent_id": 0, "name": "Direct Reasoner", "description": "Solve the question directly and state the main answer."},
+      {"agent_id": 1, "name": "Multi-Perspective Analyst", "description": "Analyze the question from complementary perspectives."},
+      {"agent_id": 2, "name": "Assumption Checker", "description": "Check assumptions, evidence, and possible ambiguities."},
+      {"agent_id": 3, "name": "Critical Reviewer", "description": "Review candidate answers and identify unsupported claims."},
+      {"agent_id": 4, "name": "Final Answer Synthesizer", "description": "Synthesize the strongest answer and follow the output requirements."}
+    ]
+  },
+  "hotpotqa": {
+    "task_type": "qa",
+    "roles": [
+      {"agent_id": 0, "name": "Entity Analyst", "description": "Identify entities and key relations in the question."},
+      {"agent_id": 1, "name": "Evidence Collector", "description": "Extract relevant facts from the supplied context."},
+      {"agent_id": 2, "name": "Bridge Reasoner", "description": "Connect evidence across facts and reasoning steps."},
+      {"agent_id": 3, "name": "Answer Verifier", "description": "Check whether the answer is supported and complete."},
+      {"agent_id": 4, "name": "Final Answer Generator", "description": "Return the concise answer in the required format."}
+    ]
+  }
+}
