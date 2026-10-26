@@ -2,6 +2,10 @@
 
 This repository provides the implementation of **Not Every Agent Needs the Strongest Model: Unified Prompt–Model Optimization for Heterogeneous LLM-based Multi-Agent Systems** (UniMASO).
 
+## 📣 News
+
+- **[10/26/2026]** Our paper has been submitted to arXiv: [https://arxiv.org/abs/2610.31743](https://arxiv.org/abs/2610.31743)!
+
 ## 🧠 About UniMASO
 LLM-based multi-agent systems use role-specific prompts and models to solve complex tasks, but existing prompt optimization usually keeps model assignments fixed. UniMASO jointly optimizes prompts and model assignments, using cost-aware Pareto search, topology-aware co-evolution, and cross-level trajectory memory. Experiments on five benchmarks and five execution topologies show competitive task performance at lower deployment cost. Under centralized execution, UniMASO improves the average score from 69.79 to 70.40 while reducing token-weighted deployment cost by 85.2% relative to DeepSeek-V4-Pro with MASPO.
 
