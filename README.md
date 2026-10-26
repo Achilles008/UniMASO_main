@@ -107,9 +107,13 @@ Replace `path/to/optimized_config.json` with the prompt configuration path print
 ## 📜 Citation
 
 ```bibtex
-@misc{cai2027unimaso,
-  title  = {Not Every Agent Needs the Strongest Model: Unified Prompt--Model Optimization for Heterogeneous LLM-based Multi-Agent Systems},
-  author = {Cai, Mingxiu and Xian, Haoyang and Ma, Xinyu and Wang, Yutong and Song, Zhenxi and Li, Jing and Liu, Xuebo},
-  year   = {2027}
+@misc{cai2026unimaso,
+  title         = {Not Every Agent Needs the Strongest Model: Unified Prompt--Model Optimization for Heterogeneous LLM-based Multi-Agent Systems},
+  author        = {Cai, Mingxiu and Xian, Haoyang and Ma, Xinyu and Wang, Yutong and Song, Zhenxi and Li, Jing and Liu, Xuebo},
+  year          = {2026},
+  eprint        = {2610.31743},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.MA},
+  url           = {https://arxiv.org/abs/2610.31743}
 }
 ```
